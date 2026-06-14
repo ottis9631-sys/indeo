@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="html" href="inex.html">
+    <link rel="html" href="indeotable.html">
+    <title>indeo</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to indeo</h1>
+        <h1 id="counter">0.000</h1>
+    </header>
+    <button id="startButton">Reset</button>
+<h2 id="scramble">Press space to generate scramble</h2>
+<button id="scrambleButton">New Scramble</button>
+    //make dnf button
+    <button id="dnfButton">DNF</button>
+//table open btn
+    <button id="tableButton">Solve Times</button>
+    <button id="signin">Sign In</button>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #000000;
+    }
+    header {
+        padding: 10px;
+        margin: 0;
+        color: #ffffff;
+        text-align: left;
+        font-family: 'Arial Black', Arial, sans-serif;  
+    }
+
+    #counter {
+        font-size: 70px;
+        color: #ffffff;
+        text-align: center;
+    }
+
+    button {
+        display: block;
+        margin: 20px auto;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 7px;
+        border: 2px solid #ffffff;
+    }
+
+    #scramble {
+        color: #ffffff;
+        text-align: center;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 50%;
+        margin: 20px auto;
+        background-color: #000000;
+        font-family: 'Arial', sans-serif;
+        color: #ffffff;
+        border: 2px solid #ffffff;
+        border-radius: 7px;
+    }   
+
+    th, td {
+        border: 2px solid #ffffff;
+        border-radius: 7px;
+        padding: 10px;
+    }
+    #dnfButton {
+        background-color: #000000;
+        color: #ffffff;
+        border: 2px solid #ffffff;
+        border-radius: 7px;
+    }
+
+    #signin {
+        background-color: #000000;
+        color: #ffffff;
+        border: 2px solid #ffffff;
+        border-radius: 7px;
+        text-align: left;
+        position: absolute;
+        right: 10px;
+        top: 10px;
+    }
+
+    #tableButton {
+        background-color: #000000;
+        color: #ffffff;
+        border: 2px solid #ffffff;
+        border-radius: 7px;
+    }
+
+
+
+</style>
+<script>
+    let counter = document.getElementById('counter');
+
+    let running = false;
+    let startTime = 0;
+    let animation;
+
+    function showSec() {
+        if (!running) return;
+
+        let diff = performance.now() - startTime;
+        counter.textContent = (diff / 1000).toFixed(3);
+
+       animation = requestAnimationFrame(showSec);
+    }
+    
+    window.addEventListener("keydown", e => {
+        if (e.code === "Space") {
+            if (running) {
+                running = false;
+                cancelAnimationFrame(animation);
+                const solveTime = (performance.now() - startTime) / 1000;
+                logSolveTime(solveTime);
+            } else {
+                running = true;
+                startTime = performance.now();
+                showSec();
+            }
+        }
+    });
+
+    document.getElementById('startButton').onclick = function() {
+        running = false;
+        cancelAnimationFrame(animation);
+        counter.textContent = '0.000';
+        startButton.blur(); // Remove focus from the button after clicking
+    };
+    
+//  Scramble generator
+    const scrambleButton = document.getElementById('scrambleButton');
+    const scrambleDisplay = document.getElementById('scramble');
+
+    const moves = ['R', 'L', 'U', 'D', 'F', 'B'];
+    const modifiers = ['', "'", '2'];
+
+    function generateScramble() {
+        let scramble = '';
+        let lastMove = '';
+
+        for (let i = 0; i < 25; i++) {
+            let move;
+            do {
+                move = moves[Math.floor(Math.random() * moves.length)];
+            } while (move === lastMove); // Ensure no consecutive moves are the same
+
+            lastMove = move;
+            const modifier = modifiers[Math.floor(Math.random() * modifiers.length)];
+            scramble += move + modifier + ' ';
+        }
+
+        return scramble.trim();
+    }
+
+    scrambleButton.onclick = function() {
+        scrambleDisplay.textContent = generateScramble();
+    };
+
+    // DNF button functionality
+    const dnfButton = document.getElementById('dnfButton');
+
+    dnfButton.onclick = function() {
+        dnfButton.blur();
+        const solveTimes = JSON.parse(localStorage.getItem('solveTimes')) || [];
+        if (solveTimes.length === 0) return;
+        solveTimes.pop();
+        localStorage.setItem('solveTimes', JSON.stringify(solveTimes));
+    };
+    // Sign in button functionality
+    const signinButton = document.getElementById('signin');
+    signinButton.onclick = function() {
+        window.location.href = 'inex.html';
+    };
+    
+    // Solve times table functionality
+    const tableButton = document.getElementById('tableButton');
+    tableButton.onclick = function() {
+        window.location.href = 'indeotable.html';
+    };
+
+    function logSolveTime(solveTime) {
+        const solveTimes = JSON.parse(localStorage.getItem('solveTimes')) || [];
+        solveTimes.push(solveTime);
+        localStorage.setItem('solveTimes', JSON.stringify(solveTimes));
+    }
+
+    //make sign in button disappear if user is signed in
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    if (users.length > 0) {
+        signinButton.style.display = 'none';
+    }
+</script>
+</body>
+</html>

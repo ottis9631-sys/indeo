@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in to indeo</title>
+</head>
+<body>
+    <header>
+        <h1>Sign in to indeo</h1>
+    </header>
+
+    <form id="signinForm">
+        <label for="username" style="color: #ffffff;">Username:</label>
+        <input type="text" id="username" name="username" required><br><br>
+        <label for="password" style="color: #ffffff;">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+        <button type="submit" class="submit">Sign In</button>
+    </form>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #000000;
+    }
+    header {
+        padding: 10px;
+        margin: 0;
+        color: #ffffff;
+        text-align: left;
+        font-family: 'Arial Black', Arial, sans-serif;  
+    }
+
+    .submit {
+        display: block;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 7px;
+        border: 2px solid #ffffff;
+        position: left 10px;
+    }
+
+
+</style>    
+    <script>
+        const signinForm = document.getElementById('signinForm');
+        signinForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            // Here you would typically send the username and password to your server for authentication.
+            //make user database in local storage
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users.find(u => u.username === username && u.password === password);
+            if (user) {
+                alert('Sign in successful!');
+                window.location.href = 'indeo.html';
+            }
+            //make user if not found
+            else {
+                const newUser = { username, password };
+                users.push(newUser);
+                localStorage.setItem('users', JSON.stringify(users));
+                alert('New user created and signed in!');
+                window.location.href = 'indeo.html';
+            }
+            //remove sign in button in indeo.html if user is signed in
+            const signinButton = document.getElementById('signin');
+            if (signinButton) {
+                signinButton.style.display = 'none';
+            }
+        
+        });
+    </script>
+</body>
+
+</html>

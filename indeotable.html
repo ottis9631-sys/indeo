@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>solve times </title>
+</head>
+<body>
+    <h1>Solve Times</h1>
+    <table id="solveTimes">
+        <thead>
+            <tr>
+                <th>Attempt</th>
+                <th>Time (seconds)</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #000000;
+        color: #ffffff;
+    }
+    h1 {
+        text-align: center;
+        margin-top: 20px;
+    }
+    table {
+        border-collapse: collapse;
+        width: 50%;
+        margin: 20px auto;
+        background-color: #000000;
+        font-family: 'Arial', sans-serif;
+        color: #ffffff;
+        border: 2px solid #ffffff;
+        border-radius: 7px;
+    }   
+    th, td {
+        border: 2px solid #ffffff;
+        border-radius: 7px;
+        padding: 10px;
+    }
+
+</style>
+<script>
+    function populateTable() {
+        const solveTimes = JSON.parse(localStorage.getItem('solveTimes')) || [];
+        const tableBody = document.querySelector('#solveTimes tbody');
+        tableBody.innerHTML = '';
+        solveTimes.forEach((time, index) => {
+            const row = document.createElement('tr');
+            const attemptCell = document.createElement('td');
+            const timeCell = document.createElement('td');
+            attemptCell.textContent = index + 1;
+            timeCell.textContent = time.toFixed(3);
+            row.appendChild(attemptCell);
+            row.appendChild(timeCell);
+            tableBody.appendChild(row);
+        });
+    }
+
+    populateTable();
+
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'solveTimes') {
+            populateTable();
+        }
+    });
+</script>
+</body>
+</html>
